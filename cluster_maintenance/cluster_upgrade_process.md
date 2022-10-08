@@ -32,7 +32,31 @@ root@controlplane:~#
 ```
 This means that both nodes have the ability to schedule workloads on them.
 
-3. 
+3. How many nodes can host workloads in this cluster?
+
+Inspect the applications and taints set on the nodes.
+
+
+2
+4
+1
+3
+
+SOLUTION >> 
+By running the kubectl describe node command, we can see that neither nodes have taints.
+
+```bash
+root@controlplane:~# kubectl describe nodes  controlplane | grep -i taint
+Taints:             <none>
+root@controlplane:~# 
+root@controlplane:~# kubectl describe nodes  node01 | grep -i taint
+Taints:             <none>
+root@controlplane:~# 
+```
+
+This means that both nodes have the ability to schedule workloads on them.
+
+
 
 4. How many applications are hosted on the cluster?
 Count the number of deployments in the default namespace.
@@ -61,6 +85,9 @@ Add new nodes with newer versions while taking down existing nodes
 Upgrade all nodes at once
 Upgrade one node at a time while moving the workloads to the other
 
+HINT >> In order to ensure minimum downtime, upgrade the cluster one node at a time, while moving the workloads to another node. In the upcoming tasks you will get to practice how to do that.
+
+
 7. What is the latest stable version available for upgrade?
 Use the kubeadm tool
 
@@ -68,17 +95,52 @@ Use the kubeadm tool
 - v1.21.0
 - v1.20.0
 - v1.23.12
-HINT >> Run the kubeadm upgrade plan command
+HINT >> Run the `kubeadm upgrade plan` command
 
-8. 
+8. We will be upgrading the controlplane node first. Drain the controlplane node of workloads and mark it UnSchedulable
+
+CheckCompleteIncomplete
+Controlplane Node: SchedulingDisabled
+
+HINT >> Run the `kubectl drain controlplane --ignore-daemonsets`
+SOLUTION >> 
+There are daemonsets created in this cluster, especially in the kube-system namespace. To ignore these objects and drain the node, we can make use of the --ignore-daemonsets flag.
+
+
 
 9. 
 
-10. 
+10. Mark the controlplane node as "Schedulable" again
+  
+Check
+- Controlplane Node: Ready & Schedulable
 
-11. 
+HINT >> Use the `kubectl uncordon command`
+SOLUTION >> Run the command: `kubectl uncordon controlplane`
 
-12. 
+--- 
+cordon에 대한 개념 학습 필요 
+
+- drain에 대한 차이점과 비슷한점
+- uncordon command는 무엇일까?
+
+
+
+11. Next is the worker node. Drain the worker node of the workloads and mark it UnSchedulable
+
+Check
+- Worker node: Unschedulable
+
+힌트 >> Use the `kubectl drain command`
+SOLUTION >> Run the command: `kubectl drain node01 --ignore-daemonsets`
+
+
+12. Upgrade the worker node to the exact version v1.24.0
+
+Check
+
+- Worker Node Upgraded to v1.24.0
+- Worker Node Ready
 
 13. 
 

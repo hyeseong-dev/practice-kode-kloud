@@ -142,7 +142,51 @@ Check
 - Worker Node Upgraded to v1.24.0
 - Worker Node Ready
 
-13. 
+HINT >> Make sure that the correct version of kubeadm is installed and then proceed to upgrade the node01 node. Once this is done, upgrade the kubelet on the node.
 
-14. 
+SOLUTION >> 
+
+On the node01 node, run the following commands:
+
+| If you are on the controlplane node, run ssh node01 to log in to the node01.
+
+This will update the package lists from the software repository.
+```bash
+apt-get update
+```
+
+This will install the kubeadm version 1.24.0.
+```bash
+apt-get install kubeadm=1.24.0-00
+```
+
+This will upgrade the node01 configuration.
+```bash
+kubeadm upgrade node
+```
+
+This will update the kubelet with the version 1.24.0.
+```bash
+apt-get install kubelet=1.24.0-00 
+```
+
+You may need to reload the daemon and restart kubelet service after it has been upgraded.
+```bash
+systemctl daemon-reload
+systemctl restart kubelet
+```
+
+Type exit or logout or enter CTRL + d to go back to the controlplane node.
+
+13. Remove the restriction and mark the worker node as schedulable again.
+
+Check
+- Worker Node: Schedulable
+
+HINT >>
+Use the kubectl uncordon command
+
+SOLUTION >> 
+
+Run the command: `kubectl uncordon node01`
 
